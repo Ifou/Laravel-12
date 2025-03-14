@@ -1,8 +1,8 @@
 <div>
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
-        <livewire:post-create />
-        <livewire:post-edit />
+        <livewire:Posts.post-create />
+        <livewire:Posts.post-edit />
 
         <flux:modal name="delete-post" class="min-w-[22rem]">
             <div class="space-y-6">

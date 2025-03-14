@@ -13,5 +13,5 @@
         </div>
         <flux:separator variant="subtle" />
     </div>
-    <livewire:posts />
+    <livewire:Posts.posts />
 </x-layouts.app>

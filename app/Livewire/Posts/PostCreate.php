@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Posts;
 
 use App\Models\Post;
 use Livewire\Component;
@@ -12,7 +12,7 @@ class PostCreate extends Component
     public $title, $body;
     public function render()
     {
-        return view('livewire.post-create');
+        return view('livewire.Posts.post-create');
     }
 
     public function submit()

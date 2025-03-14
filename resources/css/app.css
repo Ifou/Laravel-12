@@ -61,6 +61,21 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+.grid-container {
+    perspective: 1000px;
+}
+
+.grid-container > div {
+    backface-visibility: hidden;
+    transform-origin: center center;
+}
+
+.grid-container > div[x-transition] {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

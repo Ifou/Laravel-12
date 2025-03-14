@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Posts;
 
 use App\Models\Post;
 use Livewire\Component;
@@ -18,7 +18,7 @@ class Posts extends Component
 
     public function render()
     {
-        return view('livewire.posts');
+        return view('livewire.Posts.posts');
     }
 
     #[On('reload-posts')]

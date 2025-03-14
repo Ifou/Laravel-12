@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Posts;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -13,7 +13,7 @@ class PostEdit extends Component
 
     public function render()
     {
-        return view('livewire.post-edit');
+        return view('livewire.Posts.post-edit');
     }
 
     #[On('edit-post')]

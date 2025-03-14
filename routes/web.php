@@ -19,6 +19,10 @@ Route::view('profile', 'profile')
     ->middleware(['auth', 'verified'])
     ->name('profile');
 
+Route::view('cms', 'cms-create')
+    ->middleware(['auth', 'verified'])
+    ->name('cms');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
