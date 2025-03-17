@@ -13,10 +13,11 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platforms')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __(key: 'Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="document-text" :href="route('posts')" :current="request()->routeIs('posts')" wire:navigate>{{ __('Posts') }}</flux:navlist.item>
                     <flux:navlist.item icon="user" :href="route('profile')" :current="request()->routeIs('profile')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user" :href="route('cms')" :current="request()->routeIs('cms')" wire:navigate>{{ __('CMS') }}</flux:navlist.item>
+                    <flux:navlist.item icon="rectangle-stack" :href="route('cms')" :current="request()->routeIs('cms')" wire:navigate>{{ __('CMS') }}</flux:navlist.item>
+                    <flux:navlist.item icon="film" :href="route('movies')" :current="request()->routeIs('movies')" wire:navigate>{{ __('Movies') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

@@ -3,6 +3,39 @@
     
     <div>
         <livewire:cms.cms-create />
+        <livewire:cms.cms-edit />
+
+        <!-- Add the view modal directly in this component -->
+        <flux:modal name="cms-view" class="md:w-96">
+            <div class="space-y-6">
+                <div>
+                    <flux:heading size="lg">View Content</flux:heading>
+                    <flux:subheading>Content details</flux:subheading>
+                </div>
+
+                <div class="mb-4">
+                    <div class="text-sm font-medium text-gray-600 dark:text-gray-400">Title</div>
+                    <div class="mt-1 text-gray-900 dark:text-gray-100 text-lg">{{ $title ?? 'No title available' }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="text-sm font-medium text-gray-600 dark:text-gray-400">Description</div>
+                    <div class="mt-1 text-gray-900 dark:text-gray-100 whitespace-pre-wrap">{{ $description ?? 'No description available' }}</div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <flux:button 
+                        wire:click="$dispatch('cms-edit', { id: {{ $viewingContent->id ?? 0 }} }); $dispatch('close-modal', {name: 'cms-view'})"
+                        variant="primary"
+                        :disabled="!isset($viewingContent)">
+                        Edit
+                    </flux:button>
+                    <flux:modal.close name="cms-view">
+                        <flux:button variant="outline">Close</flux:button>
+                    </flux:modal.close>
+                </div>
+            </div>
+        </flux:modal>
 
         <div class="container mx-auto px-4 py-6">
             <div class="flex justify-between items-center mb-6">
@@ -54,15 +87,15 @@
                                                 </p>
                                             </div>
                                             <div class="mt-4 md:mt-0 md:ml-6 flex items-center gap-2">
-                                                <flux:button wire:click="edit({{ $content->id }})" size="sm"
-                                                    variant="outline">Edit</flux:button>
+                                                <flux:button wire:click="view({{ $content->id }})" size="sm"
+                                                    variant="primary">View</flux:button>
                                                 <flux:modal.trigger name="confirm-delete-modal-{{ $content->id }}">
                                                     <flux:button size="sm" variant="danger">Delete</flux:button>
                                                 </flux:modal.trigger>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>  
                             @endforeach
                         </div>
                     @else
@@ -77,8 +110,8 @@
                                             {{ Str::limit($content->description, $gridLayout == 2 ? 150 : 100) }}
                                         </p>
                                         <div class="flex justify-end gap-2 mt-auto">
-                                            <flux:button wire:click="edit({{ $content->id }})" size="sm"
-                                                variant="outline">Edit</flux:button>
+                                            <flux:button wire:click="view({{ $content->id }})" size="sm"
+                                                variant="primary">View</flux:button>
                                             <flux:modal.trigger name="confirm-delete-modal-{{ $content->id }}">
                                                 <flux:button size="sm" variant="danger">Delete</flux:button>
                                             </flux:modal.trigger>

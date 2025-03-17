@@ -23,6 +23,10 @@ Route::view('cms', 'cms-create')
     ->middleware(['auth', 'verified'])
     ->name('cms');
 
+Route::view('movies', 'movies')
+    ->middleware(['auth', 'verified'])
+    ->name('movies');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 

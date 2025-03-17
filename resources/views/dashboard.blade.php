@@ -5,29 +5,150 @@
                 <div class="absolute inset-0 size-full flex flex-col items-center justify-center p-4">
                     <h3 class="text-2xl font-bold text-blue-700 dark:text-blue-300">Users</h3>
                     <p class="text-4xl font-semibold text-blue-800 dark:text-blue-200">{{ \App\Models\User::count() }}</p>
-                    <div class="mt-2 w-3/4 h-12">
-                        <div class="flex items-end justify-between h-full">
-                            @foreach(range(1, 8) as $i)
-                                <div class="w-1/9 bg-blue-500 dark:bg-blue-400" style="height: {{ rand(20, 100) }}%;"></div>
-                            @endforeach
+                    
+                    @php
+                        // Extract user related logic to keep the template clean
+                        $userService = app(\App\Services\DashboardService::class);
+                        $userData = $userService->getUsersData();
+                    @endphp
+                    
+                    <div class="mt-3 w-full h-24">
+                        <!-- User Visualization -->
+                        <div class="flex items-center justify-center h-full">
+                            <div class="flex flex-wrap items-center justify-center gap-2.5">
+                                <!-- Current user (if logged in) -->
+                                @if($userData['currentUser'])
+                                    <div class="relative tooltip-trigger" data-tooltip="{{ $userData['currentUser']->name }}">
+                                        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-blue-600 text-white dark:bg-blue-500 ring-2 ring-blue-200 dark:ring-blue-700">
+                                            @if($userData['currentUser']->name)
+                                                <span class="text-xs font-medium">{{ $userData['currentUser']->initials() }}</span>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                                                </svg>
+                                            @endif
+                                        </div>
+                                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full dark:border-gray-800"></span>
+                                    </div>
+                                @endif
+                                
+                                <!-- Other users -->
+                                @foreach($userData['users'] as $index => $user)
+                                    <div class="relative tooltip-trigger" data-tooltip="{{ $user->name }}">
+                                        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-{{ $userData['colors'][$index % 4] }} text-white dark:bg-{{ $userData['colors'][$index % 4] }}/80">
+                                            @if($user->name)
+                                                <span class="text-xs font-medium">{{ $user->initials() }}</span>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                                                </svg>
+                                            @endif
+                                        </div>
+                                        @if($user->isOnline())
+                                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full dark:border-gray-800"></span>
+                                        @endif
+                                    </div>
+                                @endforeach
+                                
+                                <!-- Placeholder for empty state -->
+                                @if(empty($userData['users']) && !$userData['currentUser'])
+                                    @for($i = 0; $i < min(5, $userData['totalCount']); $i++)
+                                        <div class="relative">
+                                            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-{{ $userData['colors'][$i % 4] }}/70 text-white dark:bg-{{ $userData['colors'][$i % 4] }}/50">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    @endfor
+                                @endif
+                                
+                                <!-- More users indicator -->
+                                @if($userData['remainingCount'] > 0)
+                                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-800 text-xs font-medium dark:bg-blue-900/40 dark:text-blue-300">
+                                        +{{ $userData['remainingCount'] }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="text-center text-sm text-blue-700 dark:text-blue-300 pt-2">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <span class="inline-block w-2.5 h-2.5 bg-green-500 rounded-full"></span>
+                                <span>
+                                    {{ $userData['onlineCount'] }} 
+                                    @if($userData['currentUser'] && $userData['onlineCount'] <= 1) (You) @endif 
+                                    online now
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 bg-gradient-to-tr from-emerald-50 to-green-100 dark:border-neutral-700 dark:from-emerald-900/30 dark:to-green-900/30">
                 <div class="absolute inset-0 size-full flex flex-col items-center justify-center p-4">
                     <h3 class="text-2xl font-bold text-emerald-700 dark:text-emerald-300">Posts</h3>
                     <p class="text-4xl font-semibold text-emerald-800 dark:text-emerald-200">{{ \App\Models\Post::count() }}</p>
-                    <div class="mt-2 w-3/4 h-12">
-                        <svg viewBox="0 0 100 20" class="w-full h-full">
-                            <path d="M0,10 Q10,{{ rand(5, 15) }},20,{{ rand(5, 15) }} T40,{{ rand(5, 15) }} T60,{{ rand(5, 15) }} T80,{{ rand(5, 15) }} T100,{{ rand(5, 15) }}" 
-                                  fill="none" stroke="currentColor" class="stroke-emerald-500 dark:stroke-emerald-400" stroke-width="2" />
-                        </svg>
+                    
+                    @php
+                        $postService = app(\App\Services\DashboardService::class);
+                        $postData = $postService->getPostsData();
+                    @endphp
+                    
+                    <div class="mt-3 w-full h-24">
+                        <!-- Post Visualization -->
+                        <div class="flex justify-center h-full">
+                            <div class="w-full max-w-[220px] flex justify-between items-end">
+                                @foreach($postData['categories'] as $category)
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-14 bg-{{ $category['color'] }} dark:bg-{{ $category['darkColor'] }}"
+                                             style="height: {{ $category['height'] }}px; border-radius: 4px 4px 0 0;">
+                                            <div class="h-full w-full flex items-center justify-center">
+                                                <span class="text-xs font-semibold text-{{ $category['textColor'] }}">{{ $category['count'] }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-1.5 text-xs text-emerald-700 dark:text-emerald-300 font-medium">
+                                            {{ $category['name'] }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+            
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 bg-gradient-to-tr from-purple-50 to-indigo-100 dark:border-neutral-700 dark:from-purple-900/30 dark:to-indigo-900/30">
+                <div class="absolute inset-0 size-full flex flex-col items-center justify-center p-4">
+                    <h3 class="text-2xl font-bold text-purple-700 dark:text-purple-300">CMS</h3>
+                    <p class="text-4xl font-semibold text-purple-800 dark:text-purple-200">{{ \App\Models\Cms::count() }}</p>
+                    
+                    @php
+                        $cmsService = app(\App\Services\DashboardService::class);
+                        $cmsData = $cmsService->getCmsData();
+                    @endphp
+                    
+                    <div class="mt-3 w-full h-24">
+                        <!-- CMS Visualization -->
+                        <div class="flex items-center justify-center h-full">
+                            <div class="grid grid-cols-4 gap-3">
+                                @foreach($cmsData['contentTypes'] as $type)
+                                    <div class="flex flex-col items-center">
+                                        <div class="flex items-center justify-center w-11 h-11 rounded-lg bg-purple-100 dark:bg-purple-900/40 transition-all hover:bg-purple-200 dark:hover:bg-purple-800/40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                                                stroke="currentColor" class="w-5 h-5 text-purple-600 dark:text-purple-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $type['icon'] }}" />
+                                            </svg>
+                                        </div>
+                                        <div class="mt-1.5 text-xs text-purple-700 dark:text-purple-300 font-medium">
+                                            {{ $type['name'] }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">

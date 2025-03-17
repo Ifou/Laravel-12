@@ -15,6 +15,18 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="document-text" :href="route('posts')" :current="request()->routeIs('posts.*')" wire:navigate>
+                    {{ __('Posts') }}
+                </flux:navbar.item>
+                <flux:navbar.item icon="user" :href="route('profile')" :current="request()->routeIs('profile*')" wire:navigate>
+                    {{ __('Profile') }}
+                </flux:navbar.item>
+                <flux:navbar.item icon="rectangle-stack" :href="route('cms')" :current="request()->routeIs('cms*')" wire:navigate>
+                    {{ __('CMS') }}
+                </flux:navbar.item>
+                <flux:navbar.item icon="film" :href="route('movies')" :current="request()->routeIs('movies.*')" wire:navigate>
+                    {{ __('Movies') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
