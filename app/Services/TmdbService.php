@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class TmdbService
 {
@@ -13,9 +14,9 @@ class TmdbService
 
     public function __construct()
     {
-        $this->baseUrl = 'https://api.themoviedb.org/3';
-        $this->apiKey = env('TMDB_API_KEY', '');
-        $this->imageBaseUrl = 'https://image.tmdb.org/t/p/';
+        $this->baseUrl = Config::get('services.tmdb.base_url', 'https://api.themoviedb.org/3');
+        $this->apiKey = Config::get('services.tmdb.api_key');
+        $this->imageBaseUrl = Config::get('services.tmdb.image_base_url', 'https://image.tmdb.org/t/p/');
     }
 
     public function getTopRatedMovies($page = 1)

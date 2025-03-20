@@ -76,4 +76,9 @@ class User extends Authenticatable implements MustVerifyEmail
         
         return $this->last_seen_at->gt(now()->subMinutes(5));
     }
+
+    public function posts()
+{
+    return $this->hasMany(Post::class);
+}
 }

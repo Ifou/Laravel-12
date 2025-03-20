@@ -1,7 +1,7 @@
 <div>
     <flux:modal name="create-post" class="md:w-96">
         <div class="space-y-6">
-            <div>
+                <div>
                 <flux:heading size="lg">Add Details</flux:heading>
                 <flux:subheading>Create your personal details.</flux:subheading>
             </div>

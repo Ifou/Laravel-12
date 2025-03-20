@@ -7,13 +7,21 @@
         @if($viewMode === 'list')
             <div class="mb-6">
                 <div class="flex space-x-4 items-center">
-                    <div class="w-full">
+                    <div class="w-3/4">
                         <flux:input 
                             wire:model.live.debounce.500ms="searchQuery"
                             placeholder="Search movies..."
                             type="search"
                             class="w-full"
                         />
+                    </div>
+                    <div class="w-1/4">
+                        <flux:select wire:model.live="sortOption" class="w-full">
+                            <option value="release_date.desc">Newest First</option>
+                            <option value="release_date.asc">Oldest First</option>
+                            <option value="popularity.desc">Most Popular</option>
+                            <option value="vote_average.desc">Highest Rated</option>
+                        </flux:select>
                     </div>
                 </div>
             </div>
@@ -56,7 +64,7 @@
                     <flux:button 
                         wire:click="prevPage" 
                         disabled="{{ $currentPage <= 1 ? 'true' : 'false' }}"
-                        variant="{{ $currentPage <= 1 ? 'subtle' : 'solid' }}"
+                        variant="{{ $currentPage <= 1 ? 'subtle' : 'primary' }}"
                     >
                         Previous
                     </flux:button>
@@ -68,7 +76,7 @@
                     <flux:button 
                         wire:click="nextPage"
                         disabled="{{ $currentPage >= $moviesData['total_pages'] ? 'true' : 'false' }}"
-                        variant="{{ $currentPage >= $moviesData['total_pages'] ? 'subtle' : 'solid' }}"
+                        variant="{{ $currentPage >= $moviesData['total_pages'] ? 'subtle' : 'primary' }}"
                     >
                         Next
                     </flux:button>

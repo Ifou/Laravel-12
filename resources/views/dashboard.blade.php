@@ -1,6 +1,6 @@
 <x-layouts.app title="Dashboard">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div class="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-2">
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 bg-gradient-to-br from-blue-50 to-blue-100 dark:border-neutral-700 dark:from-blue-900/30 dark:to-indigo-900/30">
                 <div class="absolute inset-0 size-full flex flex-col items-center justify-center p-4">
                     <h3 class="text-2xl font-bold text-blue-700 dark:text-blue-300">Users</h3>
@@ -96,7 +96,7 @@
                     @endphp
                     
                     <div class="mt-3 w-full h-24">
-                        <!-- Post Visualization -->
+                        <!-- Post Visualization - Improved Bar Chart -->
                         <div class="flex justify-center h-full">
                             <div class="w-full max-w-[220px] flex justify-between items-end">
                                 @foreach($postData['categories'] as $category)
@@ -107,8 +107,71 @@
                                                 <span class="text-xs font-semibold text-{{ $category['textColor'] }}">{{ $category['count'] }}</span>
                                             </div>
                                         </div>
-                                        <div class="mt-1.5 text-xs text-emerald-700 dark:text-emerald-300 font-medium">
+                                        <div class="mt-1 text-xs text-emerald-700 dark:text-emerald-300 font-medium">
                                             {{ $category['name'] }}
+                                        </div>
+                                        <div class="text-xs text-emerald-600 dark:text-emerald-400">
+                                            {{ $category['percentage'] }}%
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 bg-gradient-to-tr from-amber-50 to-yellow-100 dark:border-neutral-700 dark:from-amber-900/30 dark:to-yellow-900/30">
+                <div class="absolute inset-0 size-full flex flex-col items-center justify-center p-4">
+                    <h3 class="text-2xl font-bold text-amber-700 dark:text-amber-300">Movies</h3>
+                    <p class="text-4xl font-semibold text-amber-800 dark:text-amber-200">{{ \App\Models\Movie::count() }}</p>
+                    
+                    @php
+                        $movieService = app(\App\Services\DashboardService::class);
+                        $movieData = $movieService->getMoviesData();
+                    @endphp
+                    
+                    <div class="mt-3 w-full h-24">
+                        <!-- Movie Visualization - Pie Chart -->
+                        <div class="flex justify-center h-full">
+                            <div class="relative w-24 h-24">
+                                <!-- Pie chart visualization -->
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="relative w-full h-full">
+                                        @php
+                                            $startDeg = 0;
+                                        @endphp
+                                        
+                                        @foreach($movieData['ratingCategories'] as $index => $category)
+                                            @php
+                                                $deg = 3.6 * $category['percentage'];
+                                                $endDeg = $startDeg + $deg;
+                                                
+                                                // Create a conic gradient segment
+                                                $style = "background: conic-gradient(transparent {$startDeg}deg, var(--tw-gradient-from) {$startDeg}deg, var(--tw-gradient-to) {$endDeg}deg, transparent {$endDeg}deg);";
+                                                
+                                                $startDeg = $endDeg;
+                                            @endphp
+                                            
+                                            <div class="absolute inset-0 rounded-full from-{{ $category['color'] }} to-{{ $category['color'] }}" style="{{ $style }}"></div>
+                                        @endforeach
+                                        
+                                        <!-- Inner circle (donut hole) -->
+                                        <div class="absolute inset-0 m-auto w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                                            <span class="text-xs font-medium text-amber-800 dark:text-amber-200">{{ $movieData['totalCount'] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Legend -->
+                            <div class="ml-4 flex flex-col justify-center">
+                                @foreach($movieData['ratingCategories'] as $category)
+                                    <div class="flex items-center mb-1">
+                                        <div class="w-3 h-3 rounded-full bg-{{ $category['color'] }} dark:bg-{{ $category['darkColor'] }} mr-2"></div>
+                                        <div>
+                                            <span class="text-xs font-medium text-amber-800 dark:text-amber-300">{{ $category['name'] }}</span>
+                                            <span class="text-xs text-amber-600 dark:text-amber-400 ml-1">({{ $category['percentage'] }}%)</span>
                                         </div>
                                     </div>
                                 @endforeach
@@ -129,19 +192,27 @@
                     @endphp
                     
                     <div class="mt-3 w-full h-24">
-                        <!-- CMS Visualization -->
+                        <!-- CMS Visualization - Improved Icon Grid -->
                         <div class="flex items-center justify-center h-full">
                             <div class="grid grid-cols-4 gap-3">
                                 @foreach($cmsData['contentTypes'] as $type)
                                     <div class="flex flex-col items-center">
-                                        <div class="flex items-center justify-center w-11 h-11 rounded-lg bg-purple-100 dark:bg-purple-900/40 transition-all hover:bg-purple-200 dark:hover:bg-purple-800/40">
+                                        <div class="flex items-center justify-center w-11 h-11 rounded-lg bg-purple-100 dark:bg-purple-900/40 transition-all hover:bg-purple-200 dark:hover:bg-purple-800/40 relative">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
                                                 stroke="currentColor" class="w-5 h-5 text-purple-600 dark:text-purple-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="{{ $type['icon'] }}" />
                                             </svg>
+                                            
+                                            <!-- Count badge -->
+                                            <div class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-purple-500 dark:bg-purple-400 flex items-center justify-center">
+                                                <span class="text-[10px] font-bold text-white">{{ $type['count'] }}</span>
+                                            </div>
                                         </div>
-                                        <div class="mt-1.5 text-xs text-purple-700 dark:text-purple-300 font-medium">
+                                        <div class="mt-1 text-xs text-purple-700 dark:text-purple-300 font-medium">
                                             {{ $type['name'] }}
+                                        </div>
+                                        <div class="text-[10px] text-purple-600 dark:text-purple-400">
+                                            {{ $type['percentage'] }}%
                                         </div>
                                     </div>
                                 @endforeach

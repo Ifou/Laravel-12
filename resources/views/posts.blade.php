@@ -1,5 +1,5 @@
 <x-layouts.app title="Dashboard">
-    <div class="relative mb-6 w-full">
+    {{-- <div class="relative mb-6 w-full">
         <div class="flex justify-between items-center">
             <div>
             <flux:heading size="xl" level="1">Posts</flux:heading>
@@ -12,6 +12,6 @@
             </div>
         </div>
         <flux:separator variant="subtle" />
-    </div>
+    </div> --}}
     <livewire:Posts.posts />
 </x-layouts.app>

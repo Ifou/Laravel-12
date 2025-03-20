@@ -8,8 +8,22 @@ use Flux\Flux;
 
 class PostCreate extends Component
 {
+    public $title = '';
+    public $body = '';
+    
+    protected $rules = [
+        'title' => 'required|min:3|max:255',
+        'body' => 'required|min:10',
+    ];
+    
+    protected $messages = [
+        'title.required' => 'The post title is required.',
+        'title.min' => 'The title must be at least 3 characters.',
+        'title.max' => 'The title cannot exceed 255 characters.',
+        'body.required' => 'The post content is required.',
+        'body.min' => 'The content must be at least 10 characters.',
+    ];
 
-    public $title, $body;
     public function render()
     {
         return view('livewire.Posts.post-create');
@@ -17,25 +31,32 @@ class PostCreate extends Component
 
     public function submit()
     {
-        $this->validate([
-            "title" => "required",
-            "body" => "required",
-        ]);
+        $this->validate();
         
-        Post::create([
-            "title" => $this->title,
-            "body" => $this->body
-        ]);
+        
+        try {
+            Post::create([
+                "title" => $this->title,
+                "body" => $this->body,
+                "created_at" => now(),
+                "updated_at" => now(),
+            ]);
 
-        $this->resetForm();
+            $this->resetForm();
 
-        Flux::modal('create-post')->close();
-        $this->dispatch("reload-posts");   
+            Flux::modal('create-post')->close();
+            // Just use toast without chaining or additional parameters
+            Flux::toast('Post created successfully!');
+            $this->dispatch("reload-posts");   
+        } catch (\Exception $e) {
+            // Just use toast without chaining or additional parameters
+            Flux::toast('Failed to create post. Please try again.');
+        }
     }
 
     public function resetForm()
     {
-        $this->title = '';
-        $this->body = '';
+        $this->reset(['title', 'body']);
+        $this->resetValidation();
     }
 }
